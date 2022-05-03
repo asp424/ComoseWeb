@@ -2,21 +2,23 @@ package ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import kotlinx.coroutines.CoroutineScope
 import org.jetbrains.compose.web.dom.Button
 import org.jetbrains.compose.web.dom.Text
 import utils.iterator
 
 @Composable
-fun CoroutineScope.expandButton(
+fun SnapshotStateList<Boolean>.expandButton(
     size: Int,
-    type: Int = 1,
-    collector: (Int) -> Unit
+    scope: CoroutineScope,
+    type: Int = 1
 ) = with(mutableStateOf(false)) {
     Button({
         onClick {
-            iterator(if(type == 0) (0 .. size) else (0 until size), 50) { i ->
-                collector(if (value) i else size - i)
+            scope.iterator(if (type == 0) (0..size) else (0 until size), 50) { i ->
+                if (value) this@expandButton[i] = !this@expandButton[i]
+                else this@expandButton[size - i] = !this@expandButton[size - i]
                 if (i == size) value = !value
             }
         }

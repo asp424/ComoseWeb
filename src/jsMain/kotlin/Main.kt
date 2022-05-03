@@ -11,7 +11,8 @@ import org.jetbrains.compose.web.dom.Text
 import org.jetbrains.compose.web.renderComposable
 import ui.expandButton
 import ui.fetchButton
-import ui.photosRow
+import ui.animatedItems
+import utils.HOLDER
 
 fun main() {
     val items = 8
@@ -22,13 +23,14 @@ fun main() {
                 with(remember {
                     mutableStateListOf<Boolean>().apply { (0..items).onEach { add(false) } }
                 }) {
+
                     P {
-                        expandButton(items) { this@with[it] = !this@with[it] }
-                        photosRow()
+                        expandButton(items, this@apply)
+                        animatedItems()
                     }
                 }
 
-                remember { mutableStateOf("responseHolder") }.apply {
+                remember { mutableStateOf(HOLDER) }.apply {
                     P {
                         fetchButton { value = it }
                         Text(value)
