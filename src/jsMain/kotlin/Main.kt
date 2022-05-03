@@ -23,7 +23,7 @@ fun main() {
                     mutableStateListOf<Boolean>().apply { (0..items).onEach { add(false) } }
                 }) {
                     P {
-                        expandButton(items - 1) { this@with[it] = !this@with[it] }
+                        expandButton(items) { this@with[it] = !this@with[it] }
                         photosRow()
                     }
                 }
