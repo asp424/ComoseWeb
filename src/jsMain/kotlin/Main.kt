@@ -1,4 +1,7 @@
-import androidx.compose.runtime.*
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import org.jetbrains.compose.web.css.paddingLeft
 import org.jetbrains.compose.web.css.paddingTop
 import org.jetbrains.compose.web.css.px
@@ -11,27 +14,31 @@ import ui.fetchButton
 import ui.photosRow
 
 fun main() {
-    val items = 5
-    val map = mutableStateListOf<Boolean>().apply { (0..items).onEach { add(false) } }
+    val items = 8
     renderComposable("root") {
-        val coroutine = rememberCoroutineScope()
-        var responseText by remember { mutableStateOf("responseHolder") }
+        rememberCoroutineScope().apply {
+            Div({ style { paddingTop(200.px); paddingLeft(100.px); } }) {
 
-        Div({ style { paddingTop(200.px); paddingLeft(100.px); } }) {
+                with(remember {
+                    mutableStateListOf<Boolean>().apply { (0..items).onEach { add(false) } }
+                }) {
+                    P {
+                        expandButton(items - 1) { this@with[it] = !this@with[it] }
+                        photosRow()
+                    }
+                }
 
-            P {
-                coroutine.expandButton(items - 1) { map[it] = !map[it] }
-                map.photosRow()
+                remember { mutableStateOf("responseHolder") }.apply {
+                    P {
+                        fetchButton { value = it }
+                        Text(value)
+                    }
+                }
             }
-
-            P {
-                coroutine.fetchButton { responseText = it }
-                Text(responseText)
-            }
-
         }
     }
 }
+
 
 
 
